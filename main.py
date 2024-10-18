@@ -157,7 +157,7 @@ def main():
     test_file = sys.argv[2]
 
     train_df, test_df = load_data(train_file, test_file)
-    Xtest = test_df.iloc[:, :-1]
+    Xtest = test_df.iloc[:, :]
     Ytrain = train_df.iloc[:, -1]
     Xtrain = train_df.iloc[:, :-1]
 
