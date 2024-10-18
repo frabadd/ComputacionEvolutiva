@@ -24,18 +24,12 @@ def load_data(train_file, test_file):
         print(f"Error: {e}")
         sys.exit(1)
 
-import numpy as np
-
 def generate_population(num_individuos, num_atributos):
     mascaras = np.random.randint(2, size=(num_individuos, num_atributos))
     pesos = np.random.uniform(-1, 1, (num_individuos, num_atributos))
-    
-    suma_pesos = pesos.sum(axis=1, keepdims=True)   
-    suma_pesos[suma_pesos == 0] = 1e-10
-    pesos_normalizados = pesos / suma_pesos
+    pesos_normalizados = pesos / pesos.sum(axis=1, keepdims=True)
     poblacion = np.stack((mascaras, pesos_normalizados), axis=1)
     return poblacion
-
 
 def fitness_poblacion(poblacion, Xtrain, Ytrain, umbral=0.5, metrica='f1'):
     poblacion = np.asarray(poblacion)
@@ -69,7 +63,7 @@ def fitness_poblacion(poblacion, Xtrain, Ytrain, umbral=0.5, metrica='f1'):
 
 def fitness(individuo, Xtrain, Ytrain, umbral=0.5, metrica='f1'):
     individuo = np.copy(np.asarray(individuo))
-    individuo[1] = individuo[1] * individuo[0] / (np.sum(individuo[1] * individuo[0]) + 1e-10)   
+    individuo[1] = individuo[1] * individuo[0] / np.sum(individuo[1] * individuo[0])
     y_true = Ytrain
     probs = np.dot(Xtrain.astype(np.float64), individuo[1, :].T.astype(np.float64))
     y_pred = (probs >= umbral).astype(int)
@@ -163,13 +157,13 @@ def main():
     test_file = sys.argv[2]
 
     train_df, test_df = load_data(train_file, test_file)
-    Xtest = test_df
+    Xtest = test_df.iloc[:, :]
     Ytrain = train_df.iloc[:, -1]
     Xtrain = train_df.iloc[:, :-1]
 
     gen_actual = 0
     goat = np.zeros(Xtrain.shape[1])
-    poblacion = generate_population(1000, Xtrain.shape[1])
+    poblacion = generate_population(2000, Xtrain.shape[1])
     fit_max = 0
     fitnessPob = 0
     rng = np.random.default_rng()
@@ -222,6 +216,7 @@ def main():
         gen_actual += 1
 
     Ypred = predict(goat, Xtest)
+
     print(json.dumps(Ypred.tolist()))
 
 
