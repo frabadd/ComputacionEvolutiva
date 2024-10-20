@@ -169,7 +169,7 @@ def main():
 
     gen_actual = 0
     goat = np.zeros(Xtrain.shape[1])
-    poblacion = generate_population(1000, Xtrain.shape[1])
+    poblacion = generate_population(2000, Xtrain.shape[1])
     fit_max = 0
     fitnessPob = 0
     rng = np.random.default_rng()
