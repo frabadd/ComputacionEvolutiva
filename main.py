@@ -194,7 +194,7 @@ def main():
             num_elites = 3  # Más elitismo para conservar los mejores individuos
         # Aumentar elitismo para mantener los mejores individuos
         mutation_rate = dynamic_mutation_rate(start_time, total_time)
-        tournament_size = tournament_size = dynamic_tournament_size(start_time, total_time)  
+        tournament_size = dynamic_tournament_size(start_time, total_time)  
 
         # Selección
         seleccionados = seleccion_torneo(fitnessPob, poblacion, tournament_size)
